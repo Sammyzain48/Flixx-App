@@ -16,10 +16,11 @@ const fetchData = async (endpoint) => {
   const url = "https://api.themoviedb.org/3/";
   const API_KEY = "c44bc25193aa9b19ea9441b23874ecb2";
   const language = "en-US";
-  
+  showSpinner()
   const request = await fetch(`${url}${endpoint}?api_key=${API_KEY}&language=${language}`);
   const response = await request.json();
   const data = await response;
+  hideSpinner();
   return data;
 }
 
@@ -56,6 +57,50 @@ const showPopularMovies = async () => {
     document.querySelector("#popular-movies").appendChild(div);
   })
 }
+
+
+const showPopularShow = async () => {
+  const { results } = await fetchData("tv/popular");
+  results.forEach((show) => {
+    const div = document.createElement("div");
+    div.classList.add("card");
+    div.innerHTML = `
+      <a href="shows.html?id=${show.id}">
+            ${
+            show.poster_path ? 
+            `<img
+              src="https://image.tmdb.org/t/p/w500${show.poster_path}"
+              class="card-img-top"
+              alt="Movie Title"
+            />`
+            :
+            `<img
+              src="images/no-image.jpg"
+              class="card-img-top"
+              alt="Movie Title"
+            />`
+              
+            }
+          </a>
+          
+      <div class = "card-body" >
+        <h5 class="card-title">${show.name}</h5> 
+        <p class = "card-text" >
+        <small class="text-muted">Release:${show.first_air_date}</small></p> 
+      </div>
+    `
+    document.querySelector("#popular-shows").appendChild(div);
+  })
+}
+
+const showSpinner = () => {
+  document.querySelector(".spinner").classList.add("show");
+}
+
+const hideSpinner = () => {
+  document.querySelector(".spinner").classList.remove("show");
+}
+
 const init = () => {
   switch(global.currentPage) {
     case "/flixx-app/" : 
@@ -68,7 +113,6 @@ const init = () => {
     break;
     
     case "/flixx-app/tv-details.html" :
-      console.log("Tv Shows");
     break;
     
     case "/flixx-app/search.html" :
@@ -76,7 +120,7 @@ const init = () => {
     break;
     
     case "/flixx-app/shows.html" : 
-      console.log("Shows");
+      showPopularShow();
     break;
   }
   
