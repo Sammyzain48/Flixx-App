@@ -30,7 +30,7 @@ const showPopularMovies = async () => {
     const div = document.createElement("div");
     div.classList.add("card");
     div.innerHTML = `
-      <a href="movie-details.html?id=1">
+      <a href="movie-details.html?id={movie.id}">
             ${
             movie.poster_path ? 
             `<img
@@ -65,7 +65,7 @@ const showPopularShow = async () => {
     const div = document.createElement("div");
     div.classList.add("card");
     div.innerHTML = `
-      <a href="shows.html?id=${show.id}">
+      <a href="tv-details.html?id=${show.id}">
             ${
             show.poster_path ? 
             `<img
