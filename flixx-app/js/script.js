@@ -93,6 +93,13 @@ const showPopularShow = async () => {
   })
 }
 
+//movie details
+const movieDetails = async () => {
+  console.log(window.location.search);
+}
+movieDetails();
+
+
 const showSpinner = () => {
   document.querySelector(".spinner").classList.add("show");
 }
