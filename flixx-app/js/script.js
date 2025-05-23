@@ -198,21 +198,22 @@ const showTvDetails = async () => {
                 return `<li>${genre.name}</li>`
               }).join("")}
             </ul>
-            <a href="#" target="_blank" class="btn">Visit Show Homepage</a>
+            <a href="${show.homepage}" target="_blank" class="btn">Visit Show Homepage</a>
           </div>
         </div>
         <div class="details-bottom">
           <h2>Show Info</h2>
           <ul>
-            <li><span class="text-secondary">Number Of Episodes:</span> 50</li>
+            <li><span class="text-secondary">Number Of Episodes:</span> ${show.number_of_episodes}</li>
             <li>
-              <span class="text-secondary">Last Episode To Air:</span> Last
-              Aired Show Episode
+              <span class="text-secondary">Last Episode To Air:</span> ${show.last_episode_to_air.episode_number}
             </li>
-            <li><span class="text-secondary">Status:</span> Released</li>
+            <li><span class="text-secondary">Status:</span>${show.status}</li>
           </ul>
           <h4>Production Companies</h4>
-          <div class="list-group">Company 1, Company 2, Company 3</div>
+          <div class="list-group">${show.production_companies.map((company) => {
+            return `${company.name}`
+          })}</div>
         </div>
   `
   document.querySelector("#show-details").appendChild(div);
