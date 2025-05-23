@@ -25,7 +25,7 @@ const fetchData = async (endpoint) => {
 }
 
 const showPopularMovies = async () => {
-  const { results } = await fetchData("movie/popular");
+  const { results } = await fetchData("movie/upcoming");
   results.forEach((movie) => {
     const div = document.createElement("div");
     div.classList.add("card");
@@ -60,7 +60,7 @@ const showPopularMovies = async () => {
 
 
 const showPopularShow = async () => {
-  const { results } = await fetchData("tv/popular");
+  const { results } = await fetchData("tv/airing_today");
   results.forEach((show) => {
     const div = document.createElement("div");
     div.classList.add("card");
@@ -159,11 +159,62 @@ ${
 
 const showTvDetails = async () => {
   const showsID = window.location.search.split("=")[1];
-  const movie = await fetchData(`movie/${showsID}`);
+  const show = await fetchData(`movie/${showsID}`);
 
-  displayBackground("shows", shows.poster_path);
+  displayBackground("show", show.poster_path);
   const div = document.createElement("div");
-  
+  div.innerHTML = `
+            <div class="details-top">
+          <div>
+            ${
+            show.poster_path ? 
+            `<img
+              src="https://image.tmdb.org/t/p/w500${show.poster_path}"
+              class="card-img-top"
+              alt="Movie Title"
+            />`
+            :
+            `<img
+              src="images/no-image.jpg"
+              class="card-img-top"
+              alt="Movie Title"
+            />`
+              
+            }
+          </div>
+          <div>
+            <h2>${show.name}</h2>
+            <p>
+              <i class="fas fa-star text-primary"></i>
+              ${show.vote_average} / 10
+            </p>
+            <p class="text-muted">Release Date: ${show.first_air_date}</p>
+            <p>
+              ${show.overview}
+            </p>
+            <h5>Genres</h5>
+            <ul class="list-group">
+              ${show.genres.map((genre) => {
+                return `<li>${genre.name}</li>`
+              }).join("")}
+            </ul>
+            <a href="#" target="_blank" class="btn">Visit Show Homepage</a>
+          </div>
+        </div>
+        <div class="details-bottom">
+          <h2>Show Info</h2>
+          <ul>
+            <li><span class="text-secondary">Number Of Episodes:</span> 50</li>
+            <li>
+              <span class="text-secondary">Last Episode To Air:</span> Last
+              Aired Show Episode
+            </li>
+            <li><span class="text-secondary">Status:</span> Released</li>
+          </ul>
+          <h4>Production Companies</h4>
+          <div class="list-group">Company 1, Company 2, Company 3</div>
+        </div>
+  `
   document.querySelector("#show-details").appendChild(div);
 }
 
@@ -186,7 +237,7 @@ const displayBackground = (type, backgroundPath) => {
     document.querySelector("#movie-details").appendChild(overlay);
   }
   else {
-    document.querySelector("#-details").appendChild(overlay);
+    document.querySelector("#show-details").appendChild(overlay);
   }
 }
 
