@@ -60,7 +60,7 @@ const showPopularMovies = async () => {
 
 
 const showPopularShow = async () => {
-  const { results } = await fetchData("tv/airing_today");
+  const { results } = await fetchData("tv/popular");
   results.forEach((show) => {
     const div = document.createElement("div");
     div.classList.add("card");
@@ -159,7 +159,7 @@ ${
 
 const showTvDetails = async () => {
   const showsID = window.location.search.split("=")[1];
-  const show = await fetchData(`movie/${showsID}`);
+  const show = await fetchData(`tv/${showsID}`);
 
   displayBackground("show", show.poster_path);
   const div = document.createElement("div");
