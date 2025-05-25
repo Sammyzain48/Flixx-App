@@ -1,5 +1,12 @@
 const global = {
-  currentPage: window.location.pathname
+  currentPage: window.location.pathname,
+  search: {
+    type: "",
+    term: "",
+    page: 1,
+    total_pages: 1,
+    total_results: 1
+  }
 }
 
 // highlighting the best link that is currently active
@@ -222,6 +229,30 @@ const showTvDetails = async () => {
   document.querySelector("#show-details").appendChild(div);
 }
 
+// creating the search function to be able to search for a movie/show
+
+const search = async () => {
+  const queryString = window.location.search;
+  const params = new URLSearchParams(queryString);
+  global.search.type = params.get("type");
+  global.search.term = params.get("search-term");
+  
+  //check to see if the user inputed anything in the search box
+  if(global.search.term !== "" && global.search.term !== null){
+    
+  }
+  else {
+    showAlert("you haven't inputed anything");
+  }
+}
+
+const showAlert = (error) => {
+  const div = document.createElement("div");
+  div.classList.add("alert");
+  div.appendChild(document.createTextNode(error));
+  document.querySelector("#alert").appendChild(div);
+}
+
 //creates the background in the movie/tv details page
 const displayBackground = (type, backgroundPath) => {
   const overlay = document.createElement("div");
@@ -360,7 +391,7 @@ const init = () => {
     break;
     
     case "/flixx-app/search.html" :
-      console.log("Search");
+      search();
     break;
     
     case "/flixx-app/shows.html" : 
