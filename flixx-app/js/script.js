@@ -4,8 +4,8 @@ const global = {
     type: "",
     term: "",
     page: 1,
-    total_pages: 1,
-    total_results: 1
+    total_page: 1,
+    results: 1
   }
 }
 
@@ -239,12 +239,43 @@ const search = async () => {
   
   //check to see if the user inputed anything in the search box
   if(global.search.term !== "" && global.search.term !== null){
-    const {results} = await searchAPI();
-    results.forEach((result) => {
- const div = document.createElement("div");
- div.classList.add("card");
- div.innerHTML = `
-      <a href="${global.search.type}-details.html?id=${result.id}">
+    const {results, total_pages, total_results, page} = await searchAPI();
+    displayResults(results);
+    
+    global.search.page = page;
+    global.search.results = total_results;
+    global.search.total_page = total_pages;
+    
+    //display heading for search results
+    document.querySelector("#search-results-heading").innerHTML = `
+      <h2>${results.length} of ${global.search.results} for ${global.search.term}</h2>
+    `
+    
+    // pagination
+    pagination()
+  }
+  else {
+    showAlert("you haven't inputed anything");
+  }
+}
+
+const pagination = () => {
+  const div = document.createElement("div");
+  div.classList.add("pagination");
+  div.innerHTML = `
+          <button class="btn btn-primary" id="prev">Prev</button>
+          <button class="btn btn-primary" id="next">Next</button>
+          <div class="page-counter">Page ${global.search.page} of ${global.search.total_page}</div>
+      `
+  document.querySelector("#pagination").appendChild(div);
+}
+
+const displayResults = (results) => {
+  results.forEach((result) => {
+      const div = document.createElement("div");
+      div.classList.add("card");
+      div.innerHTML = `
+        <a href="${global.search.type}-details.html?id=${result.id}">
             ${
             result.poster_path ? 
             `<img
@@ -262,20 +293,18 @@ const search = async () => {
             }
           </a>
           
-      <div class = "card-body" >
+        <div class = "card-body" >
         <h5 class="card-title">${global.search.type === "movie" ? result.title : result.name}</h5> 
         <p class = "card-text" >
         <small class="text-muted">Release:${global.search.type === "movie" ? result.release_date : result.first_air_date}</small></p> 
-      </div>
+        </div>
     `
-   document.querySelector("#search-results").appendChild(div);
-})
-  }
-  else {
-    showAlert("you haven't inputed anything");
-  }
+      document.querySelector("#search-results").appendChild(div);
+  });
 }
 
+
+// creating a functikn that fetches api for our search button
 const searchAPI = async () => {
   const url = "https://api.themoviedb.org/3/";
   const API_KEY = "c44bc25193aa9b19ea9441b23874ecb2";
@@ -288,6 +317,7 @@ const searchAPI = async () => {
   return data;
 }
 
+// a function that shows error
 const showAlert = (error) => {
   const div = document.createElement("div");
   div.classList.add("alert");
