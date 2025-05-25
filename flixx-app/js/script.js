@@ -239,18 +239,60 @@ const search = async () => {
   
   //check to see if the user inputed anything in the search box
   if(global.search.term !== "" && global.search.term !== null){
-    
+    const {results} = await searchAPI();
+    results.forEach((result) => {
+ const div = document.createElement("div");
+ div.classList.add("card");
+ div.innerHTML = `
+      <a href="${global.search.type}-details.html?id=${result.id}">
+            ${
+            result.poster_path ? 
+            `<img
+              src="https://image.tmdb.org/t/p/w500${result.poster_path}"
+              class="card-img-top"
+              alt="${global.search.type === "movie" ? result.title : result.name}"
+            />`
+            :
+            `<img
+              src="images/no-image.jpg"
+              class="card-img-top"
+              alt="${global.search.type === "movie" ? result.title : result.name}"
+            />`
+              
+            }
+          </a>
+          
+      <div class = "card-body" >
+        <h5 class="card-title">${global.search.type === "movie" ? result.title : result.name}</h5> 
+        <p class = "card-text" >
+        <small class="text-muted">Release:${global.search.type === "movie" ? result.release_date : result.first_air_date}</small></p> 
+      </div>
+    `
+   document.querySelector("#search-results").appendChild(div);
+})
   }
   else {
     showAlert("you haven't inputed anything");
   }
 }
 
+const searchAPI = async () => {
+  const url = "https://api.themoviedb.org/3/";
+  const API_KEY = "c44bc25193aa9b19ea9441b23874ecb2";
+  const language = "en-US";
+  showSpinner()
+  const request = await fetch(`${url}search/${global.search.type}?api_key=${API_KEY}&language=${language}&query=${global.search.term}`);
+  const response = await request.json();
+  const data = await response;
+  hideSpinner();
+  return data;
+}
+
 const showAlert = (error) => {
   const div = document.createElement("div");
   div.classList.add("alert");
   div.appendChild(document.createTextNode(error));
-  document.querySelector("#alert").appendChild(div);
+  document.querySelector("#alert").appendChild(div)
 }
 
 //creates the background in the movie/tv details page
@@ -296,25 +338,6 @@ const movieSlider = async () => {
   initSwiper();
 }
 
-const showSlider = async () => {
-  const { results } = await fetchData("tv/on_the_air");
-  results.forEach((show) => {
-    const div = document.createElement("div");
-    div.classList.add("swiper-slide");
-    div.innerHTML = `
-      <a href="tv-details.html?id=${show.id}">
-              <img src="https://image.tmdb.org/t/p/w500${show.poster_path}" alt="${show.title}" />
-            </a>
-            <h4 class="swiper-rating">
-              <i class="fas fa-star text-secondary"></i> ${show.vote_average} / 10
-            </h4>
-    `
-    document.querySelector(".swiper-wrapper").appendChild(div);
-  });
-  
-  initShowSwiper();
-}
-
 const initSwiper = () => {
   const swiper = new Swiper(".swiper", {
     slidesPerView: 1,
@@ -340,30 +363,7 @@ const initSwiper = () => {
   
 }
 
-const initShowSwiper = () => {
-  const showSwiper = new Swiper(".swiper", {
-    slidesPerView: 1,
-    spaceBetween: 30,
-    freeMode: true,
-    loop: true,
-    autoPlay: {
-      delay: 4000,
-      disableOnInteraction: false
-    },
-    breakpoints: {
-      500: {
-        slidesPerView: 1
-      },
-      700: {
-        slidesPerView: 2
-      },
-      1200: {
-        slidesPerView: 3
-      }
-    }
-  })
 
-}
 
 
 const showSpinner = () => {
@@ -395,7 +395,6 @@ const init = () => {
     break;
     
     case "/flixx-app/shows.html" : 
-      showSlider();
       showPopularShow();
     break;
   }
