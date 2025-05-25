@@ -2,7 +2,7 @@ const global = {
   currentPage: window.location.pathname
 }
 
-
+// highlighting the best link that is currently active
 const showActiveLink = () => {
   const allLinks = document.querySelectorAll(".nav-link");
   allLinks.forEach((link) => {
@@ -12,6 +12,7 @@ const showActiveLink = () => {
   })
 }
 
+// creating a function that will be fetchibg ednpoint from the  api of the themoviedatabase
 const fetchData = async (endpoint) => {
   const url = "https://api.themoviedb.org/3/";
   const API_KEY = "c44bc25193aa9b19ea9441b23874ecb2";
@@ -24,6 +25,7 @@ const fetchData = async (endpoint) => {
   return data;
 }
 
+// displaying popular movies
 const showPopularMovies = async () => {
   const { results } = await fetchData("movie/upcoming");
   results.forEach((movie) => {
@@ -58,7 +60,7 @@ const showPopularMovies = async () => {
   })
 }
 
-
+// displaying popular shows
 const showPopularShow = async () => {
   const { results } = await fetchData("tv/popular");
   results.forEach((show) => {
@@ -157,6 +159,7 @@ ${
   document.querySelector("#movie-details").appendChild(div);
 }
 
+// displaying shows details
 const showTvDetails = async () => {
   const showsID = window.location.search.split("=")[1];
   const show = await fetchData(`tv/${showsID}`);
@@ -262,6 +265,25 @@ const movieSlider = async () => {
   initSwiper();
 }
 
+const showSlider = async () => {
+  const { results } = await fetchData("tv/on_the_air");
+  results.forEach((show) => {
+    const div = document.createElement("div");
+    div.classList.add("swiper-slide");
+    div.innerHTML = `
+      <a href="tv-details.html?id=${show.id}">
+              <img src="https://image.tmdb.org/t/p/w500${show.poster_path}" alt="${show.title}" />
+            </a>
+            <h4 class="swiper-rating">
+              <i class="fas fa-star text-secondary"></i> ${show.vote_average} / 10
+            </h4>
+    `
+    document.querySelector(".swiper-wrapper").appendChild(div);
+  });
+  
+  initShowSwiper();
+}
+
 const initSwiper = () => {
   const swiper = new Swiper(".swiper", {
     slidesPerView: 1,
@@ -285,6 +307,31 @@ const initSwiper = () => {
     }
   })
   
+}
+
+const initShowSwiper = () => {
+  const showSwiper = new Swiper(".swiper", {
+    slidesPerView: 1,
+    spaceBetween: 30,
+    freeMode: true,
+    loop: true,
+    autoPlay: {
+      delay: 4000,
+      disableOnInteraction: false
+    },
+    breakpoints: {
+      500: {
+        slidesPerView: 1
+      },
+      700: {
+        slidesPerView: 2
+      },
+      1200: {
+        slidesPerView: 3
+      }
+    }
+  })
+
 }
 
 
@@ -317,6 +364,7 @@ const init = () => {
     break;
     
     case "/flixx-app/shows.html" : 
+      showSlider();
       showPopularShow();
     break;
   }
