@@ -470,24 +470,24 @@ function initSwiper() {
 //dynamically changes the web files without delay
 function router () {
     switch(global.currentPage){
-        case "/":
-            case "/index.html":
+        case "/flixx-app":
+            case "/flixx-app/index.html":
         showSlider();
         displayPopularMovies();
         break;
 
-        case "/movie-details.html":
+        case "/flixx-app/movie-details.html":
             movieDetails();
         break;
 
-        case "/search.html":
+        case "/flixx-app/search.html":
             searchMoviesandShows();
         break;
 
-        case "/shows.html":
+        case "/flixx-app/shows.html":
             displayPopularShows();
         break;
-        case "/tv-details.html":
+        case "/flixx-app/tv-details.html":
             showDetails();
         break;
     }
